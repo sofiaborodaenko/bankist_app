@@ -140,18 +140,20 @@ function updateUI(acc) {
 // EVENT HANDLERS
 let currAccount;
 
-currAccount = account1;
-updateUI(currAccount);
+// currAccount = account1;
+// updateUI(currAccount);
 
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
 
+  // gets the user thats inputed
   currAccount = accounts.find(
     (acc) => acc.username === inputLoginUsername.value
   );
 
   console.log(currAccount);
 
+  // makes sure the pin is correct before logging
   if (currAccount?.pin === Number(inputLoginPin.value)) {
     labelWelcome.textContent = `Welcome back ${
       currAccount.owner.split(" ")[0]
@@ -170,13 +172,16 @@ btnLogin.addEventListener("click", function (e) {
   }
 });
 
+// transferring between accounts
 btnTransfer.addEventListener("click", function (e) {
-  e.preventDefault();
+  e.preventDefault(); // prevents reload after submiting
+
   const amount = Number(inputTransferAmount.value);
   const receiverAcc = accounts.find(
     (acc) => acc.username === inputTransferTo.value
   );
 
+  // resets the values
   inputTransferAmount.value = inputTransferTo.value = "";
 
   if (
@@ -190,4 +195,25 @@ btnTransfer.addEventListener("click", function (e) {
     receiverAcc.movements.push(amount);
     updateUI(currAccount);
   }
+});
+
+btnClose.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currAccount.username &&
+    Number(inputClosePin.value) === currAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.username === currAccount.username
+    );
+
+    // delete account
+    accounts.splice(index, 1);
+
+    // hide UI
+    containerApp.style.opacity = 0;
+  }
+
+  inputClosePin.value = inputCloseUsername.value = "";
 });
