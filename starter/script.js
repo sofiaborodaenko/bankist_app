@@ -61,6 +61,7 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
+// displays the main data in the center
 const displayMovements = function (movements) {
   containerMovements.innerHTML = "";
 
@@ -70,15 +71,48 @@ const displayMovements = function (movements) {
     const html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${type}">${i} ${type}</div>
-          <div class="movements__value">${mov}</div>
+          <div class="movements__value">${mov}€</div>
         </div>
         `;
 
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
-displayMovements(account1.movements);
 
+// calculates and displays the balance at the top right of the screen
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce(function (acc, mov) {
+    return acc + mov;
+  }, 0);
+
+  labelBalance.textContent = `${balance}€`;
+};
+
+// calculates and displays the summaries located at the bottom of the screen
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements
+    .filter((mov) => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+
+  labelSumIn.textContent = `${incomes}€`;
+
+  const out = acc.movements
+    .filter((mov) => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+
+  labelSumOut.textContent = `${Math.abs(out)}€`;
+
+  // interest is 1.2% of each deposited amount for this bank
+  const interest = acc.movements
+    .filter((mov) => mov > 0)
+    .map((dep) => (dep * acc.interestRate) / 100)
+    .filter((int) => int >= 1)
+    .reduce((acc, int) => acc + int, 0);
+
+  labelSumInterest.textContent = `${interest}€`;
+};
+
+// createts the username based on users name
 const createUsername = function (accs) {
   accs.forEach(function (acc) {
     acc.username = acc.owner
@@ -92,25 +126,36 @@ const createUsername = function (accs) {
 };
 createUsername(accounts);
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce(function (acc, mov) {
-    return acc + mov;
-  }, 0);
+// EVENT HANDLERS
+let currAccount;
 
-  labelBalance.textContent = `${balance} EUR`;
-};
-calcDisplayBalance(account1.movements);
+btnLogin.addEventListener("click", function (e) {
+  e.preventDefault();
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
+  currAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
 
-// const currencies = new Map([
-//   ['USD', 'United States dollar'],
-//   ['EUR', 'Euro'],
-//   ['GBP', 'Pound sterling'],
-// ]);
+  if (currAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back ${
+      currAccount.owner.split(" ")[0]
+    }`;
 
-// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+    containerApp.style.opacity = 1;
 
-/////////////////////////////////////////////////
+    // clears input fields
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    // displays movement
+    displayMovements(currAccount.movements);
+
+    // displays balance
+    calcDisplayBalance(currAccount.movements);
+
+    // displays summary
+    calcDisplaySummary(currAccount);
+
+    console.log(currAccount);
+  }
+});
