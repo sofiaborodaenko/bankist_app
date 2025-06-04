@@ -140,9 +140,6 @@ function updateUI(acc) {
 // EVENT HANDLERS
 let currAccount;
 
-// currAccount = account1;
-// updateUI(currAccount);
-
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
 
@@ -150,8 +147,6 @@ btnLogin.addEventListener("click", function (e) {
   currAccount = accounts.find(
     (acc) => acc.username === inputLoginUsername.value
   );
-
-  console.log(currAccount);
 
   // makes sure the pin is correct before logging
   if (currAccount?.pin === Number(inputLoginPin.value)) {
@@ -167,8 +162,6 @@ btnLogin.addEventListener("click", function (e) {
 
     // update the UI
     updateUI(currAccount);
-
-    console.log(currAccount);
   }
 });
 
@@ -197,6 +190,27 @@ btnTransfer.addEventListener("click", function (e) {
   }
 });
 
+// asks for a loan
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const ammount = Number(inputLoanAmount.value);
+
+  // checks if the user has ten person of the loan request
+  if (
+    ammount > 0 &&
+    currAccount.movements.some((mov) => mov >= ammount * 0.1)
+  ) {
+    // adding movemenet
+    currAccount.movements.push(ammount);
+
+    //update UI
+    updateUI(currAccount);
+  }
+  inputLoanAmount.value = btnLoan.value = "";
+});
+
+// deletes the account
 btnClose.addEventListener("click", function (e) {
   e.preventDefault();
 
