@@ -62,15 +62,19 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 // displays the main data in the center
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = "";
 
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? "deposit" : "withdrawal";
 
     const html = `
         <div class="movements__row">
-          <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
+          <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
           <div class="movements__value">${mov}€</div>
         </div>
         `;
@@ -137,7 +141,7 @@ function updateUI(acc) {
   calcDisplaySummary(acc);
 }
 
-// EVENT HANDLERS
+//--------------EVENT HANDLERS--------------
 let currAccount;
 
 btnLogin.addEventListener("click", function (e) {
@@ -227,7 +231,18 @@ btnClose.addEventListener("click", function (e) {
 
     // hide UI
     containerApp.style.opacity = 0;
+
+    // change the text at the top
+    labelWelcome.textContent = "Log in to get started";
   }
 
   inputClosePin.value = inputCloseUsername.value = "";
+});
+
+// sort the movements
+let sorted = false;
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault;
+  displayMovements(currAccount.movements, !sorted);
+  sorted = !sorted;
 });
