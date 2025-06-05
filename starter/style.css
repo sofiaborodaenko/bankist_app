@@ -39,6 +39,12 @@ nav {
   height: 5.25rem;
 }
 
+.logo-main {
+  position: absolute;
+  top: 50%;
+  left: 45%;
+}
+
 .login {
   display: flex;
 }
