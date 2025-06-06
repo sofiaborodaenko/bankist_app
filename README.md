@@ -24,7 +24,7 @@ A sleek and minimalistic front-end banking interface built using JavaScript. Thi
 | User                            | PIN  |
 |---------------------------------|------|
 | Jonas Schmedtmann (Username: js)| 1111 |
-| Jessica Davis     (Username: js)| 2222 |
+| Jessica Davis     (Username: jd)| 2222 |
 
 ## 📌 To Run Locally
 
