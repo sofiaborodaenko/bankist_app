@@ -1,1 +1,1 @@
-# bankist_app
+# Bankist App
