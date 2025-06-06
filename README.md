@@ -6,7 +6,7 @@ A sleek and minimalistic front-end banking interface built using JavaScript. Thi
 
 - 🔐 Login simulation with unique account credentials
 - 💸 Transfer money between users
-- 🏦 Request and approve loans
+- 🏦 Request loans
 - 🗑 Close accounts and logout
 - 📈 Auto-calculated summaries: total deposits, withdrawals, and interest
 - ⏳ Automatic logout after inactivity
