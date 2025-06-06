@@ -47,8 +47,8 @@ const account1 = {
     "2020-01-28T09:15:04.904Z",
     "2020-04-01T10:17:24.185Z",
     "2020-05-08T14:11:59.604Z",
-    "2025-06-02T17:01:17.194Z",
     "2025-06-09T23:36:17.929Z",
+    "2025-06-02T17:01:17.194Z",
     "2025-06-04T10:51:36.790Z",
   ],
   currency: "EUR",
@@ -103,6 +103,8 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
+//--------------FUNCTIONS--------------
+
 const formatMovementDate = function (date, locale) {
   const calcDaysPassed = (date1, date2) =>
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
@@ -114,10 +116,6 @@ const formatMovementDate = function (date, locale) {
   if (daysPassed === 1) return "Yesterday";
   if (daysPassed <= 7) return `${daysPassed} days ago`;
   else {
-    // const day = `${date.getDate()}`.padStart(2, 0);
-    // const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    // const year = date.getFullYear();
-
     return new Intl.DateTimeFormat(locale).format(date);
   }
 };
@@ -237,13 +235,35 @@ function updateUI(acc) {
   calcDisplaySummary(acc);
 }
 
-//--------------EVENT HANDLERS--------------
-let currAccount;
+const startLogoutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(0, 2);
+    const sec = String(time % 60).padStart(0, 2);
 
-// fake log in
-currAccount = account1;
-updateUI(currAccount);
-containerApp.style.opacity = 1;
+    // change the time on the ui
+    labelTimer.textContent = `${min}:${sec}`;
+
+    // logout user after timer runs out
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = "Log in to get started";
+      containerApp.style.opacity = 0;
+    }
+
+    time--;
+  };
+
+  // set timer to five minutes
+  let time = 300;
+
+  // decrease the timer
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+
+//--------------EVENT HANDLERS--------------
+let currAccount, timer;
 
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
@@ -265,9 +285,6 @@ btnLogin.addEventListener("click", function (e) {
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
 
-    // update the UI
-    updateUI(currAccount);
-
     // create the date
     const now = new Date();
     const options = {
@@ -282,6 +299,13 @@ btnLogin.addEventListener("click", function (e) {
       currAccount.locale,
       options
     ).format(now);
+
+    // update the UI
+    updateUI(currAccount);
+
+    // begin/reset timer on login
+    if (timer) clearInterval(timer);
+    timer = startLogoutTimer();
   }
 });
 
@@ -312,6 +336,10 @@ btnTransfer.addEventListener("click", function (e) {
     receiverAcc.movementsDates.push(new Date().toISOString());
 
     updateUI(currAccount);
+
+    // reset timer
+    clearInterval(timer);
+    timer = startLogoutTimer();
   }
 });
 
@@ -326,16 +354,22 @@ btnLoan.addEventListener("click", function (e) {
     ammount > 0 &&
     currAccount.movements.some((mov) => mov >= ammount * 0.1)
   ) {
-    // adding movemenet
-    currAccount.movements.push(ammount);
+    setTimeout(function () {
+      // adding movemenet
+      currAccount.movements.push(ammount);
 
-    // add loan date
-    currAccount.movementsDates.push(new Date().toISOString());
+      // add loan date
+      currAccount.movementsDates.push(new Date().toISOString());
 
-    //update UI
-    updateUI(currAccount);
+      //update UI
+      updateUI(currAccount);
+    }, 5000);
   }
   inputLoanAmount.value = btnLoan.value = "";
+
+  // reset timer
+  clearInterval(timer);
+  timer = startLogoutTimer();
 });
 
 // deletes the account
@@ -369,4 +403,8 @@ btnSort.addEventListener("click", function (e) {
   e.preventDefault;
   displayMovements(currAccount, !sorted);
   sorted = !sorted;
+
+  // reset timer
+  clearInterval(timer);
+  timer = startLogoutTimer();
 });
