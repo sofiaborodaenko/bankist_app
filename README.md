@@ -16,8 +16,6 @@ A sleek and minimalistic front-end banking interface built using JavaScript. Thi
 - HTML5
 - CSS3
 - JavaScript (ES6+)
-- DOM Manipulation
-
 
 ## 🔑 Account Credentials (for testing)
 
