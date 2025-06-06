@@ -2,8 +2,6 @@
 
 A sleek and minimalistic front-end banking interface built using JavaScript. This project simulates a real-world online banking experience—featuring login functionality, money transfers, loan requests, and account closure.
 
-![Bankist App Screenshot](./screenshot.png)
-
 ## 🚀 Features
 
 - 🔐 Login simulation with unique account credentials
