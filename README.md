@@ -30,4 +30,8 @@ A sleek and minimalistic front-end banking interface built using JavaScript. Thi
    ```bash
    git clone https://github.com/sofiaborodaenko/bankist_app.git
 
+## 📘 Credits
+
+Original design and HTML/CSS starter files provided as part of a course project.
+
 
